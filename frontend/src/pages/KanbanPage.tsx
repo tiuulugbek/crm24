@@ -34,7 +34,12 @@ export default function KanbanPage() {
 
   const statuses = statusesData ?? DEFAULT_STATUSES;
 
-  const { data: clients } = useQuery({
+  const {
+    data: clients,
+    isLoading: clientsLoading,
+    isError: clientsError,
+    refetch: refetchClients,
+  } = useQuery({
     queryKey: ['clients'],
     queryFn: () => clientsApi.getAll().then(res => res.data),
   });
@@ -107,7 +112,7 @@ export default function KanbanPage() {
 
   const handleDragStart = (event: any) => {
     const { active } = event;
-    const client = clients?.find((c: any) => c.id === active.id);
+    const client = (clients ?? []).find((c: any) => c.id === active.id);
     setActiveClient(client);
   };
 
@@ -120,7 +125,7 @@ export default function KanbanPage() {
     const clientId = active.id as string;
     const newStatus = over.id as string;
 
-    const client = clients?.find((c: any) => c.id === clientId);
+    const client = (clients ?? []).find((c: any) => c.id === clientId);
     if (!client || client.status === newStatus) return;
 
     const isNewToContacted = client.status === 'new' && newStatus === 'contacted';
@@ -142,25 +147,49 @@ export default function KanbanPage() {
     });
   };
 
-  const getClientsByStatus = (status: string) => {
-    return clients?.filter((c: any) => c.status === status) || [];
-  };
-
-  const selectedClient = selectedClientId ? (clients as any[])?.find((c: any) => c.id === selectedClientId) : null;
-
-  if (!statuses || !clients) {
+  if (!statuses) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center min-h-[50vh]">
         <div className="text-gray-500">Yuklanmoqda...</div>
       </div>
     );
   }
 
+  if (clientsLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-gray-500">Yuklanmoqda...</div>
+      </div>
+    );
+  }
+
+  const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1').replace(/\/api\/v1\/?$/, '');
+  const clientsList = clients ?? [];
+  const getClientsByStatus = (status: string) =>
+    clientsList.filter((c: any) => c.status === status);
+  const selectedClient = selectedClientId
+    ? clientsList.find((c: any) => c.id === selectedClientId)
+    : null;
+
   return (
     <div className="h-full bg-gray-50 dark:bg-gray-900 overflow-hidden">
-      <div className="p-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+      <div className="p-4 sm:p-6 pb-safe">
+        {clientsError && (
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 px-4 py-3">
+            <p className="text-amber-800 dark:text-amber-200 text-sm">
+              Mijozlar ro‘yxati yuklanmadi. Backend (<code className="bg-amber-100 dark:bg-amber-900/40 px-1 rounded">{apiBase}</code>) ishga tushiring, keyin qayta yuklang.
+            </p>
+            <button
+              type="button"
+              onClick={() => refetchClients()}
+              className="shrink-0 px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90 text-sm font-medium"
+            >
+              Qayta yuklash
+            </button>
+          </div>
+        )}
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
             Mijozlar oqimi
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
@@ -173,7 +202,7 @@ export default function KanbanPage() {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <div className="flex gap-4 overflow-x-auto pb-4">
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 -webkit-overflow-scrolling-touch" style={{ WebkitOverflowScrolling: 'touch' }}>
             {statuses
               .sort((a: any, b: any) => a.position - b.position)
               .map((status: any) => (
@@ -253,7 +282,8 @@ export default function KanbanPage() {
                   <button
                     type="button"
                     onClick={() => { setSelectedClientId(null); setPanelEditMode(false); }}
-                    className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 touch-manipulation"
+                    aria-label="Yopish"
                   >
                     <X className="w-5 h-5" />
                   </button>

@@ -9,9 +9,17 @@
     border-color: theme('colors.gray.200');
   }
   
+  html {
+    /* Mobil: notchlı qurilmalar uchun xavfsiz joy */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
   body {
     @apply bg-white text-gray-900;
     font-family: 'Inter', sans-serif;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
   
   .dark body {
@@ -27,6 +35,16 @@
   
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+  
+  /* Mobil: pastki padding (tab bar / notch) */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  /* Touch uchun yumshoq scroll (iOS) */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -63,7 +81,7 @@ button {
   @apply focus:outline-none;
 }
 
-/* Input styles */
+/* Input styles — mobil da touch uchun yetarli balandlik */
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -73,6 +91,11 @@ input[type="url"],
 textarea,
 select {
   @apply transition-all duration-200;
+  min-height: 44px;
+}
+
+textarea {
+  min-height: 88px;
 }
 
 /* Card hover effects */

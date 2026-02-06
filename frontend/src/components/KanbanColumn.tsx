@@ -35,7 +35,7 @@ export default function KanbanColumn({ status, clients, onOpenClient }: Props) {
     <div
       ref={setNodeRef}
       className={`
-        flex-shrink-0 w-72 rounded-xl border-2 p-4 transition-colors
+        flex-shrink-0 w-[280px] sm:w-72 rounded-xl border-2 p-3 sm:p-4 transition-colors
         ${isOver ? 'border-primary bg-primary/5' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'}
       `}
     >

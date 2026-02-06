@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { MessageSquare, Send, User } from 'lucide-react';
+import { MessageSquare, Send, User, ArrowLeft } from 'lucide-react';
 import { messagesApi } from '../lib/api';
 import toast from 'react-hot-toast';
 
@@ -43,15 +43,15 @@ export default function InboxPage() {
   };
 
   return (
-    <div className="p-6 h-[calc(100vh-8rem)] flex flex-col">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-        <MessageSquare className="w-7 h-7 text-primary" />
+    <div className="p-4 sm:p-6 h-[calc(100vh-4rem)] sm:h-[calc(100vh-5rem)] flex flex-col">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-2 sm:mb-4">
+        <MessageSquare className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
         Inbox
       </h1>
-      <p className="text-gray-600 dark:text-gray-400 mb-4">Barcha kanallardan kelgan xabarlar</p>
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">Barcha kanallardan kelgan xabarlar</p>
 
-      <div className="flex-1 flex gap-4 min-h-0 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="w-80 flex-shrink-0 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+      <div className="flex-1 flex flex-col sm:flex-row gap-0 sm:gap-4 min-h-0 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className={`flex flex-col flex-shrink-0 ${selectedId ? 'hidden sm:flex sm:w-80' : 'w-full sm:w-80'} border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-gray-700`}>
           <div className="p-3 border-b border-gray-200 dark:border-gray-700">
             <input
               type="text"
@@ -70,7 +70,7 @@ export default function InboxPage() {
                   key={c.id}
                   type="button"
                   onClick={() => setSelectedId(c.id)}
-                  className={`w-full text-left p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 ${activeId === c.id ? 'bg-primary/10 border-l-4 border-l-primary' : ''}`}
+                  className={`w-full text-left p-3 sm:p-4 min-h-[56px] border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 active:bg-gray-100 dark:active:bg-gray-700 ${activeId === c.id ? 'bg-primary/10 border-l-4 border-l-primary' : ''}`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
@@ -87,15 +87,23 @@ export default function InboxPage() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className={`flex-1 flex flex-col min-w-0 ${!selectedId ? 'hidden sm:flex' : ''}`}>
           {activeId ? (
             <>
-              <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+              <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedId(null)}
+                  className="sm:hidden p-2 -ml-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-400 rounded-lg"
+                  aria-label="Orqaga"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                   <User className="w-5 h-5 text-primary" />
                 </div>
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white">Suhbat</p>
+                <div className="min-w-0">
+                  <p className="font-medium text-gray-900 dark:text-white truncate">Suhbat</p>
                   <p className="text-xs text-gray-500">Javob yozing</p>
                 </div>
               </div>

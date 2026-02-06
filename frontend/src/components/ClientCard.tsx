@@ -86,10 +86,10 @@ export default function ClientCard({ client, isDragging: isOverlay, onOpenDetail
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onOpenDetail(client.id); }}
-          className="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-700 rounded flex-shrink-0"
+          className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-700 rounded flex-shrink-0 touch-manipulation"
           title="To‘liq ochish"
         >
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-5 h-5" />
         </button>
       )}
     </div>
